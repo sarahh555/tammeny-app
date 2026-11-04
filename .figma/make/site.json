@@ -1,0 +1,11 @@
+{
+  "title": "Resolution Copilot",
+  "description": "Streamline freelance business management with AI-powered pricing, proposals, invoicing, and payment tools designed for global freelancers.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
