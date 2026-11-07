@@ -2,7 +2,7 @@ import { FormEvent, ReactNode, useState } from "react"
 
 type IconName = "arrow" | "bell" | "check" | "chevron" | "clipboard" | "close" | "dashboard" | "document" | "heart" | "info" | "lock" | "menu" | "message" | "refresh" | "search" | "send" | "shield" | "sparkles" | "time" | "upload" | "user" | "warning"
 
-function Icon({ name, size = 18 }: { name: IconName size?: number }) {
+function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
   const paths: Record<IconName, ReactNode> = {
     arrow: (
       <>
@@ -1328,10 +1328,11 @@ function IssueScreen({
               </div>
               <Button
                 variant="secondary"
+                disabled
                 className="h-10! rounded-[12px]! border-[#c5ddd6]! bg-[#f0f8f5]! px-4! text-[13px]! font-medium! text-[#176f5b]! shadow-none! transition-all! duration-200! hover:border-[#9fc8bc]! hover:bg-[#e3f2ed]! hover:text-[#0f604f]! hover:shadow-[0_4px_12px_rgba(19,123,102,0.12)]! focus-visible:outline-none! focus-visible:ring-2! focus-visible:ring-[#168068]! focus-visible:ring-offset-2! active:translate-y-px!"
               >
                 <Icon name="upload" size={16} />
-                Upload screenshot
+                Screenshot upload (coming soon)
               </Button>
             </div>
             <div className="form-actions">
@@ -1489,7 +1490,7 @@ function ExplanationScreen({
               ].map((item) => (
                 <div className="safety-answer" key={item[0]}>
                   <span>
-                    <Icon name={item[2]} size={17} />
+                    <Icon name={item[2] as IconName} size={17} />
                   </span>
                   <div>
                     <small>{item[0]}</small>
