@@ -1,5 +1,5 @@
 import { FormEvent, ReactNode, useState } from "react"
-
+   import { analyzeAccountNotice } from "./services/ai"
 type IconName = "arrow" | "bell" | "check" | "chevron" | "clipboard" | "close" | "dashboard" | "document" | "heart" | "info" | "lock" | "menu" | "message" | "refresh" | "search" | "send" | "shield" | "sparkles" | "time" | "upload" | "user" | "warning"
 
 function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
@@ -841,6 +841,37 @@ function analyzeNotice(rawNotice: string): NoticeAnalysis {
         ? `Should I expect the review to finish within ${statedTime}?`
         : "What is the expected resolution time after I complete the request?",
     ],
+  }
+}
+function mapAiToAnalysis(
+  notice: string,
+  ai: Awaited<ReturnType<typeof analyzeAccountNotice>>,
+  base: NoticeAnalysis,
+): NoticeAnalysis {
+  const level = (ai.concernLevel ?? "").toLowerCase()
+  const severity: NoticeAnalysis["severity"] = level.includes("high")
+    ? "High"
+    : level.includes("medium") || level.includes("moderate")
+      ? "Medium"
+      : "Low"
+
+  const tasks: ResolutionTask[] = (ai.tasks ?? []).slice(0, 5).map((t, i) => ({
+    title: t.title,
+    detail: t.detail,
+    done: false,
+    priority: i === 0 ? "High priority" : "Required",
+    time: t.timeframe,
+  }))
+
+  return {
+    ...base,
+    notice,
+    severity,
+    explanation: ai.summary || base.explanation,
+    reassurance: ai.moneySafety || base.reassurance,
+    moneyStatus: ai.moneySafety || base.moneyStatus,
+    accessStatus: ai.accessStatus || base.accessStatus,
+    tasks: tasks.length >= 2 ? tasks : base.tasks,
   }
 }
 
@@ -2290,10 +2321,19 @@ function Product({ exit }: { exit: () => void }) {
   const [menu, setMenu] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [analysis, setAnalysis] = useState<NoticeAnalysis | null>(null)
-  const submitNotice = (notice: string) => {
-    setAnalysis(analyzeNotice(notice))
-    setPage("explanation")
+  const submitNotice = async (notice: string) => {
+  const base = analyzeNotice(notice)
+  try {
+    const ai = await analyzeAccountNotice({
+      platform: "PayPal",
+      noticeText: notice,
+    })
+    setAnalysis(mapAiToAnalysis(notice, ai, base))
+  } catch {
+    setAnalysis(base)
   }
+  setPage("explanation")
+}
   const content =
     page === "issue" || !analysis ? (
       <IssueScreen
