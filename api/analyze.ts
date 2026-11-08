@@ -1,4 +1,5 @@
 declare const process: { env: Record<string, string | undefined> }
+
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" })
@@ -28,8 +29,8 @@ Return ONLY a JSON object with exactly these keys:
 moneySafety, accessStatus, concernLevel, firstAction, summary (all strings),
 and tasks (array of objects with string keys: title, detail, timeframe).`
 
-  try {
-    const geminiRes = await fetch(
+  const callGemini = () =>
+    fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
       {
         method: "POST",
@@ -43,6 +44,13 @@ and tasks (array of objects with string keys: title, detail, timeframe).`
         }),
       },
     )
+
+  try {
+    let geminiRes = await callGemini()
+    if (geminiRes.status === 503 || geminiRes.status === 429) {
+      await new Promise((r) => setTimeout(r, 1500))
+      geminiRes = await callGemini()
+    }
 
     const data = await geminiRes.json()
     if (!geminiRes.ok) {
