@@ -2397,3 +2397,4 @@ export default function App() {
 }
   )
 }
+<PayPalSandboxButton amount="5.00" />
