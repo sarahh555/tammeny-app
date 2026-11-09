@@ -15,7 +15,7 @@ function loadPayPalSdk(currency: string): Promise<void> {
   if (sdkPromise) return sdkPromise;
   sdkPromise = new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&intent=capture`;
     script.onload = () => resolve();
     script.onerror = () => {
       sdkPromise = null;
@@ -58,22 +58,38 @@ export default function PayPalSandboxButton({
         containerRef.current.innerHTML = "";
         window.paypal
           .Buttons({
-            createOrder: (_data: any, actions: any) =>
-              actions.order.create({
+            createOrder: (_data: any, actions: any) => {
+              setMessage("");
+              return actions.order.create({
+                intent: "CAPTURE",
                 purchase_units: [
                   { description, amount: { currency_code: currency, value: amount } },
                 ],
-              }),
-            onApprove: async (_data: any, actions: any) => {
-              const details = await actions.order.capture();
-              setStatus("success");
-              setMessage(`Payment completed. Order ID: ${details.id}`);
-              onSuccess?.(details);
+              });
+            },
+            onApprove: async (data: any, actions: any) => {
+              try {
+                const details = await actions.order.capture();
+                setStatus("success");
+                setMessage(`Payment completed. Order ID: ${details.id}`);
+                onSuccess?.(details);
+              } catch (err) {
+                console.error("PayPal capture error:", err);
+                setStatus("error");
+                setMessage(
+                  `Payment approved but capture failed. Order ID: ${data?.orderID}`
+                );
+              }
+            },
+            onCancel: () => {
+              setMessage("Payment cancelled.");
             },
             onError: (err: unknown) => {
-              console.error(err);
+              console.error("PayPal error:", err, (err as any)?.message);
               setStatus("error");
-              setMessage("Something went wrong with the payment.");
+              setMessage(
+                `Something went wrong with the payment. ${(err as any)?.message ?? ""}`
+              );
             },
           })
           .render(containerRef.current);
