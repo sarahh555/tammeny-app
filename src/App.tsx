@@ -2384,9 +2384,16 @@ function Product({ exit }: { exit: () => void }) {
 
 export default function App() {
   const [started, setStarted] = useState(false)
-  return started ? (
-    <Product exit={() => setStarted(false)} />
-  ) : (
-    <Landing start={() => setStarted(true)} />
+  return (
+    <>
+      {started ? (
+        <Product exit={() => setStarted(false)} />
+      ) : (
+        <Landing start={() => setStarted(true)} />
+      )}
+      <PayPalSandboxButton />
+    </>
+  )
+}
   )
 }
