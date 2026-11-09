@@ -2104,6 +2104,14 @@ Estimated resolution: ${analysis.estimatedResolution}`
                 {sent ? "Summary sent" : "Open in email"}
               </Button>
             </section>
+                        <section className="panel">
+              <span className="copilot-icon">
+                <Icon name="heart" />
+              </span>
+              <h3>Support Resolution Copilot</h3>
+              <p>Sandbox test payment of $5.00 (no real money).</p>
+              <PayPalSandboxButton amount="5.00" />
+            </section>
             <div className="support-tip">
               <Icon name="shield" />
               <p>
@@ -2384,17 +2392,9 @@ function Product({ exit }: { exit: () => void }) {
 
 export default function App() {
   const [started, setStarted] = useState(false)
-  return (
-    <>
-      {started ? (
-        <Product exit={() => setStarted(false)} />
-      ) : (
-        <Landing start={() => setStarted(true)} />
-      )}
-      <PayPalSandboxButton />
-    </>
+  return started ? (
+    <Product exit={() => setStarted(false)} />
+  ) : (
+    <Landing start={() => setStarted(true)} />
   )
 }
-  )
-}
-<PayPalSandboxButton amount="5.00" />
