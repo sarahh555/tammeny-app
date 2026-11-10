@@ -1,6 +1,6 @@
-import PayPalSandboxButton from "./PayPalSandboxButton";
 import { FormEvent, ReactNode, useState } from "react"
-   import { analyzeAccountNotice } from "./services/ai"
+import PayPalSandboxButton from "./PayPalSandboxButton"
+import { analyzeAccountNotice } from "./services/ai"
 type IconName = "arrow" | "bell" | "check" | "chevron" | "clipboard" | "close" | "dashboard" | "document" | "heart" | "info" | "lock" | "menu" | "message" | "refresh" | "search" | "send" | "shield" | "sparkles" | "time" | "upload" | "user" | "warning"
 
 function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
@@ -900,9 +900,8 @@ function Landing({ start }: { start: () => void }) {
         <section className="hero wrap">
           <div className="hero-content">
             <div className="pill">
-              <span className="live-dot" /> Calm, clear help for payment account
-              issues
-            </div>
+  <span className="live-dot" /> Tammeny · Arabic for “reassure me”
+</div>
             <h1>
               Is your money safe?
               <br />
@@ -1242,7 +1241,7 @@ function Sidebar({
             <Icon name="heart" size={16} />
           </span>
           <strong>Need a little reassurance?</strong>
-          <p>Ask the Copilot anything about your account situation.</p>
+          <p>Ask Tammeny anything about your account situation.</p>
           <button
             disabled={!hasAnalysis}
             onClick={() => {
@@ -1250,7 +1249,7 @@ function Sidebar({
               openChat()
             }}
           >
-            {hasAnalysis ? "Talk to Copilot" : "Analyze a notice first"}
+            {hasAnalysis ? "Talk to Tammeny" : "Analyze a notice first"}
           </button>
         </div>
         <div className="profile">
@@ -1921,7 +1920,7 @@ function Dashboard({
               </span>
               <div>
                 <strong>Unsure about a step?</strong>
-                <p>Ask Copilot before you submit.</p>
+                <p>Ask Tammeny before you submit.</p>
               </div>
               <button>
                 Ask a question <Icon name="arrow" size={14} />
@@ -2104,13 +2103,13 @@ Estimated resolution: ${analysis.estimatedResolution}`
                 {sent ? "Summary sent" : "Open in email"}
               </Button>
             </section>
-                        <section className="panel">
+                                    <section className="panel">
               <span className="copilot-icon">
                 <Icon name="heart" />
               </span>
               <h3>Support Tammeny</h3>
-              <p>Sandbox test payment of $5.00 (no real money).</p>
-              <PayPalSandboxButton amount="5.00" />
+              <p>Liked it? Chip in $5. Sandbox test payment, no real money.</p>
+              <PayPalSandboxButton />
             </section>
             <div className="support-tip">
               <Icon name="shield" />
@@ -2232,7 +2231,7 @@ function CopilotChat({
         aria-controls="copilot-panel"
       >
         <Icon name={open ? "close" : "sparkles"} />
-        <span>{open ? "Close" : "Ask Copilot"}</span>
+        <span>{open ? "Close" : "Ask Tammeny"}</span>
       </button>
       <aside
         id="copilot-panel"
@@ -2250,7 +2249,7 @@ function CopilotChat({
               <i /> Here with you · {pageLabel[page]}
             </small>
           </div>
-          <button onClick={close} aria-label="Close Copilot">
+          <button onClick={close} aria-label="Close Tammeny">
             <Icon name="close" />
           </button>
         </header>
@@ -2309,7 +2308,7 @@ function CopilotChat({
         <form onSubmit={submit}>
           <div>
             <input
-              aria-label="Ask Copilot a question"
+              aria-label="Ask Tammeny a question"
               placeholder="Ask about your situation..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
