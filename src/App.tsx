@@ -2268,10 +2268,10 @@ function CopilotChat({
             <span className="copilot-icon">
               <Icon name="sparkles" size={14} />
             </span>
-            <p>
-              Hi Alex. I’m here with you. Ask me anything about your money,
-              timing, documents, or next steps.
-            </p>
+<p>
+  Hi Alex, Tammeny here. Take a breath, I’m with you. Ask me anything
+  about your money, timing, documents, or next steps.
+</p>
           </div>
           {messages.map((message, index) =>
             message.role === "user" ? (
@@ -2279,7 +2279,7 @@ function CopilotChat({
                 {message.text}
               </div>
             ) : (
-              <div className="ai-message" key={`${message.text}-${index}`}>
+              <div className="ai-message" key={`${mشt}-${index}`}>
                 <span className="copilot-icon">
                   <Icon name="sparkles" size={14} />
                 </span>
