@@ -74,10 +74,10 @@ export default function PayPalSandboxButton({
                 setMessage(`Payment completed. Order ID: ${details.id}`);
                 onSuccess?.(details);
               } catch (err) {
-                console.error("PayPal capture error:", err);
+                console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
                 setStatus("error");
                 setMessage(
-                  `Payment approved but capture failed. Order ID: ${data?.orderID}`
+                  console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
                 );
               }
             },
