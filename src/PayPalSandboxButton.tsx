@@ -33,6 +33,20 @@ type Props = {
   onSuccess?: (details: any) => void;
 };
 
+function describeError(err: unknown): string {
+  try {
+    const e = err as any;
+    return (
+      e?.message ||
+      e?.details?.[0]?.issue ||
+      e?.name ||
+      JSON.stringify(err, Object.getOwnPropertyNames(err as object))
+    );
+  } catch {
+    return "Unknown error";
+  }
+}
+
 export default function PayPalSandboxButton({
   amount = "5.00",
   currency = "USD",
@@ -74,10 +88,11 @@ export default function PayPalSandboxButton({
                 setMessage(`Payment completed. Order ID: ${details.id}`);
                 onSuccess?.(details);
               } catch (err) {
-                console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+                const reason = describeError(err);
+                console.error("PayPal capture error:", reason, err);
                 setStatus("error");
                 setMessage(
-                  console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+                  `Payment approved but capture failed (${reason}). Order ID: ${data?.orderID}`
                 );
               }
             },
@@ -85,11 +100,10 @@ export default function PayPalSandboxButton({
               setMessage("Payment cancelled.");
             },
             onError: (err: unknown) => {
-              console.error("PayPal error:", err, (err as any)?.message);
+              const reason = describeError(err);
+              console.error("PayPal error:", reason, err);
               setStatus("error");
-              setMessage(
-                `Something went wrong with the payment. ${(err as any)?.message ?? ""}`
-              );
+              setMessage(`Something went wrong with the payment. ${reason}`);
             },
           })
           .render(containerRef.current);
