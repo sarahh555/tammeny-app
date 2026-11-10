@@ -34,7 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         intent: "CAPTURE",
         purchase_units: [
           {
-            description: "Support Resolution Copilot (sandbox)",
+            description: "Support Tammeny (sandbox)",
             amount: { currency_code: "USD", value: "5.00" },
           },
         ],
