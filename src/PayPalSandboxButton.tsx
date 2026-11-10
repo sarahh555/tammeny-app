@@ -27,16 +27,12 @@ function loadPayPalSdk(currency: string): Promise<void> {
 }
 
 type Props = {
-  amount?: string;
   currency?: string;
-  description?: string;
   onSuccess?: (details: any) => void;
 };
 
 export default function PayPalSandboxButton({
-  amount = "5.00",
   currency = "USD",
-  description = "Test payment",
   onSuccess,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,38 +54,46 @@ export default function PayPalSandboxButton({
         containerRef.current.innerHTML = "";
         window.paypal
           .Buttons({
-            createOrder: (_data: any, actions: any) => {
+            createOrder: async () => {
               setMessage("");
-              return actions.order.create({
-                intent: "CAPTURE",
-                purchase_units: [
-                  { description, amount: { currency_code: currency, value: amount } },
-                ],
-              });
+              const res = await fetch("/api/create-order", { method: "POST" });
+              const order = await res.json();
+              if (!res.ok || !order?.id) {
+                throw new Error(order?.error || order?.message || "Could not create order");
+              }
+              return order.id;
             },
-            onApprove: async (data: any, actions: any) => {
+            onApprove: async (data: any) => {
               try {
-                const details = await actions.order.capture();
+                const res = await fetch("/api/capture-order", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ orderID: data.orderID }),
+                });
+                const details = await res.json();
+                if (!res.ok || details?.status !== "COMPLETED") {
+                  const issue =
+                    details?.details?.[0]?.issue || details?.error || details?.message || "capture failed";
+                  throw new Error(issue);
+                }
                 setStatus("success");
                 setMessage(`Payment completed. Order ID: ${details.id}`);
                 onSuccess?.(details);
-              } catch (err) {
-                console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+              } catch (err: any) {
+                console.error("PayPal capture error:", err);
                 setStatus("error");
                 setMessage(
-                  console.error("PayPal capture error:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+                  `Payment approved but capture failed (${err?.message ?? "unknown"}). Order ID: ${data?.orderID}`
                 );
               }
             },
             onCancel: () => {
               setMessage("Payment cancelled.");
             },
-            onError: (err: unknown) => {
-              console.error("PayPal error:", err, (err as any)?.message);
+            onError: (err: any) => {
+              console.error("PayPal error:", err);
               setStatus("error");
-              setMessage(
-                `Something went wrong with the payment. ${(err as any)?.message ?? ""}`
-              );
+              setMessage(`Something went wrong with the payment. ${err?.message ?? ""}`);
             },
           })
           .render(containerRef.current);
@@ -104,7 +108,7 @@ export default function PayPalSandboxButton({
     return () => {
       cancelled = true;
     };
-  }, [amount, currency, description]);
+  }, [currency]);
 
   return (
     <div style={{ maxWidth: 360 }}>
