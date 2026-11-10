@@ -147,7 +147,7 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
         <Icon name="shield" size={19} />
       </span>
       <span>
-        Resolution<span className="logo-light"> Copilot</span>
+        Tamm<span className="logo-light">eny</span>
       </span>
     </div>
   )
@@ -909,7 +909,7 @@ function Landing({ start }: { start: () => void }) {
               <span>Get a clear answer.</span>
             </h1>
             <p>
-              Resolution Copilot turns financial uncertainty into calm,
+              Tammeny turns financial uncertainty into calm,
               personalized guidance—starting with what matters most: your money.
             </p>
             <div className="hero-buttons">
@@ -955,7 +955,7 @@ function Landing({ start }: { start: () => void }) {
                   <Icon name="sparkles" />
                 </span>
                 <div>
-                  <small>RESOLUTION COPILOT</small>
+                  <small>TAMMENY</small>
                   <strong>Here’s what this really means</strong>
                 </div>
               </div>
@@ -1104,7 +1104,7 @@ function Landing({ start }: { start: () => void }) {
             <span>PRIVACY BY DESIGN</span>
             <h2>Your account stays yours.</h2>
             <p>
-              Resolution Copilot never asks for passwords or payment platform
+              Tammeny never asks for passwords or payment platform
               credentials. Share only the alert text you want explained.
             </p>
           </div>
@@ -2108,7 +2108,7 @@ Estimated resolution: ${analysis.estimatedResolution}`
               <span className="copilot-icon">
                 <Icon name="heart" />
               </span>
-              <h3>Support Resolution Copilot</h3>
+              <h3>Support Tammeny</h3>
               <p>Sandbox test payment of $5.00 (no real money).</p>
               <PayPalSandboxButton amount="5.00" />
             </section>
@@ -2237,7 +2237,7 @@ function CopilotChat({
       <aside
         id="copilot-panel"
         className={`chat-panel ${open ? "visible" : ""}`}
-        aria-label="Resolution Copilot chat"
+        aria-label="Tammeny chat"
         aria-hidden={!open}
       >
         <header>
@@ -2245,7 +2245,7 @@ function CopilotChat({
             <Icon name="sparkles" />
           </span>
           <div>
-            <strong>Resolution Copilot</strong>
+            <strong>Tammeny</strong>
             <small>
               <i /> Here with you · {pageLabel[page]}
             </small>
